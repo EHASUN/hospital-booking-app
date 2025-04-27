@@ -1,0 +1,41 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
+
+const ServiceSelectionScreen = ({ route, navigation }) => {
+  const { hospital } = route.params; // Receive hospital info from previous screen
+
+  const [services] = useState([
+    { id: '1', name: 'Blood Test' },
+    { id: '2', name: 'X-Ray' },
+    { id: '3', name: 'ECG' },
+    { id: '4', name: 'MRI' },
+  ]);
+
+  const handleSelectService = (service) => {
+    navigation.navigate('Booking', { hospital, service }); // Pass hospital and service to booking screen
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>Select a Service for {hospital.name}</Text>
+      <FlatList
+        data={services}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.item}>
+            <Text>{item.name}</Text>
+            <Button title="Book Appointment" onPress={() => handleSelectService(item)} />
+          </View>
+        )}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 20 },
+  header: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
+  item: { marginVertical: 10, padding: 15, borderWidth: 1, borderRadius: 5 },
+});
+
+export default ServiceSelectionScreen;
