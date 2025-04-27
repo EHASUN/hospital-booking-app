@@ -4,12 +4,22 @@ import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
 const ServiceSelectionScreen = ({ route, navigation }) => {
   const { hospital } = route.params; // Receive hospital info from previous screen
 
-  const [services] = useState([
-    { id: '1', name: 'Blood Test' },
-    { id: '2', name: 'X-Ray' },
-    { id: '3', name: 'ECG' },
-    { id: '4', name: 'MRI' },
-  ]);
+  const [services, setServices] = useState([]);
+
+  // Fetch available services from backend
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/services'); // Backend URL
+        const data = await response.json();
+        setServices(data);
+      } catch (error) {
+        console.error('Failed to fetch services:', error);
+      }
+    };
+
+    fetchServices();
+  }, []);
 
   const handleSelectService = (service) => {
     navigation.navigate('Booking', { hospital, service }); // Pass hospital and service to booking screen

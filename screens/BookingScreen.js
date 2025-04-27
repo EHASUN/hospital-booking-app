@@ -13,9 +13,31 @@ const BookingScreen = ({ route }) => {
     date: Yup.string().required('Date is required'),
   });
 
-  const handleBooking = (values) => {
-    setAppointmentDetails(values);
-    alert('Appointment booked successfully!');
+  const handleBooking = async (values) => {
+    try {
+      const response = await fetch('http://localhost:5000/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          hospital: hospital.name,
+          service: service.name,
+          name: values.name,
+          date: values.date,
+        }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setAppointmentDetails(data); // Store the booking details if successful
+        alert('Appointment booked successfully!');
+      } else {
+        alert(data.message); // Show error message if any
+      }
+    } catch (error) {
+      console.error('Error booking appointment:', error);
+      alert('Failed to book appointment.');
+    }
   };
 
   return (
